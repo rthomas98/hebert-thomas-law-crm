@@ -5,6 +5,9 @@ use App\Http\Controllers\Admin\LegalnarSeriesController;
 use App\Http\Controllers\Admin\CaseResultController;
 use App\Http\Controllers\Admin\InsightController;
 use App\Http\Controllers\Admin\ClientResourceController;
+use App\Http\Controllers\Admin\BulkActionController;
+use App\Http\Controllers\Admin\MediaLibraryController;
+use App\Http\Controllers\Admin\SEOController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -12,6 +15,18 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return Inertia::render('Admin/Dashboard');
 })->name('dashboard');
+
+// Bulk Actions
+Route::post('bulk/delete', [BulkActionController::class, 'delete'])->name('bulk.delete');
+Route::post('bulk/status', [BulkActionController::class, 'updateStatus'])->name('bulk.status');
+Route::post('bulk/category', [BulkActionController::class, 'updateCategory'])->name('bulk.category');
+
+// Media Library
+Route::resource('media', MediaLibraryController::class)->except(['create', 'edit']);
+
+// SEO
+Route::post('seo', [SEOController::class, 'store'])->name('seo.store');
+Route::get('seo/{type}/{id}', [SEOController::class, 'show'])->name('seo.show');
 
 // Legalnar routes
 Route::resource('legalnars', LegalnarController::class)->names([

@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\LegalnarsController;
 
 Route::get('/', function () {
     return Inertia::render('Home');
@@ -90,8 +92,14 @@ Route::middleware('auth')->group(function () {
 });
 
 // Admin Routes
-Route::prefix('admin')->middleware(['auth', 'verified'])->name('admin.')->group(function () {
+Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     require __DIR__.'/admin.php';
+    // Media routes
+    Route::get('/media', [MediaController::class, 'index'])->name('media.index');
+    Route::post('/media/upload', [MediaController::class, 'upload'])->name('media.upload');
+    Route::delete('/media/{media}', [MediaController::class, 'destroy'])->name('media.destroy');
+    // Legalnars routes
+    Route::resource('legalnars', LegalnarsController::class)->except(['show']);
 });
 
 require __DIR__.'/auth.php';

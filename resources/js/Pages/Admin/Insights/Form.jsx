@@ -3,9 +3,11 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
-import { useEffect } from 'react';
+import RichTextEditor from '@/Components/RichTextEditor';
+import { useEffect, useRef } from 'react';
 
 export default function Form({ insight = null }) {
+    const editorRef = useRef(null);
     const { data, setData, post, put, processing, errors, reset } = useForm({
         title: insight?.title || '',
         category: insight?.category || '',
@@ -70,15 +72,13 @@ export default function Form({ insight = null }) {
 
             <div>
                 <InputLabel htmlFor="content" value="Content" />
-                <textarea
-                    id="content"
-                    name="content"
-                    value={data.content}
-                    className="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                    rows="10"
-                    onChange={(e) => setData('content', e.target.value)}
-                    required
-                />
+                <div className="mt-1">
+                    <RichTextEditor
+                        ref={editorRef}
+                        value={data.content}
+                        onChange={(content) => setData('content', content)}
+                    />
+                </div>
                 <InputError message={errors.content} className="mt-2" />
             </div>
 

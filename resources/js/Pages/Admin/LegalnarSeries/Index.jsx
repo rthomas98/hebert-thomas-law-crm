@@ -1,7 +1,30 @@
 import { Head, Link } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { useState } from 'react';
+import BulkActions from '@/Components/Admin/BulkActions';
+import SearchFilter from '@/Components/Admin/SearchFilter';
+import StatusFilter from '@/Components/Admin/StatusFilter';
 
 export default function Index({ auth, series }) {
+    const [selectedItems, setSelectedItems] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [statusFilter, setStatusFilter] = useState('all');
+
+    const handleBulkAction = async (action, data) => {
+        // Handle bulk actions here
+    };
+
+    const filteredSeries = series.data.filter(item => {
+        const matchesSearch = searchQuery === '' || 
+            item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.level.toLowerCase().includes(searchQuery.toLowerCase());
+        
+        const matchesStatus = statusFilter === 'all' || 
+            (item.is_published ? 'published' : 'draft') === statusFilter;
+
+        return matchesSearch && matchesStatus;
+    });
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -25,10 +48,54 @@ export default function Index({ auth, series }) {
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                         <div className="p-6">
+                            <div className="mb-6 space-y-4">
+                                <div className="flex flex-wrap gap-4">
+                                    <SearchFilter
+                                        value={searchQuery}
+                                        onChange={setSearchQuery}
+                                        placeholder="Search series..."
+                                    />
+                                    <StatusFilter
+                                        value={statusFilter}
+                                        onChange={setStatusFilter}
+                                        options={[
+                                            { value: 'all', label: 'All Status' },
+                                            { value: 'published', label: 'Published' },
+                                            { value: 'draft', label: 'Draft' }
+                                        ]}
+                                    />
+                                </div>
+                                {selectedItems.length > 0 && (
+                                    <BulkActions
+                                        selectedCount={selectedItems.length}
+                                        onAction={handleBulkAction}
+                                        actions={[
+                                            { value: 'delete', label: 'Delete Selected' },
+                                            { value: 'publish', label: 'Publish Selected' },
+                                            { value: 'unpublish', label: 'Unpublish Selected' }
+                                        ]}
+                                    />
+                                )}
+                            </div>
+
                             <div className="overflow-x-auto">
                                 <table className="min-w-full divide-y divide-gray-200">
                                     <thead className="bg-gray-50">
                                         <tr>
+                                            <th className="w-4 p-4">
+                                                <input
+                                                    type="checkbox"
+                                                    className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                                    checked={selectedItems.length === filteredSeries.length}
+                                                    onChange={(e) => {
+                                                        if (e.target.checked) {
+                                                            setSelectedItems(filteredSeries.map(item => item.id));
+                                                        } else {
+                                                            setSelectedItems([]);
+                                                        }
+                                                    }}
+                                                />
+                                            </th>
                                             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 Title
                                             </th>
@@ -41,43 +108,49 @@ export default function Index({ auth, series }) {
                                             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 Status
                                             </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                                            <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 Actions
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 bg-white">
-                                        {series.data.map((s) => (
-                                            <tr key={s.id}>
-                                                <td className="whitespace-nowrap px-6 py-4">
-                                                    <div className="text-sm font-medium text-gray-900">
-                                                        {s.title}
-                                                    </div>
+                                        {filteredSeries.map((item) => (
+                                            <tr key={item.id} className="hover:bg-gray-50">
+                                                <td className="w-4 p-4">
+                                                    <input
+                                                        type="checkbox"
+                                                        className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                                        checked={selectedItems.includes(item.id)}
+                                                        onChange={(e) => {
+                                                            if (e.target.checked) {
+                                                                setSelectedItems([...selectedItems, item.id]);
+                                                            } else {
+                                                                setSelectedItems(selectedItems.filter(id => id !== item.id));
+                                                            }
+                                                        }}
+                                                    />
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4">
-                                                    <div className="text-sm text-gray-500">
-                                                        {s.level}
-                                                    </div>
+                                                    <div className="text-sm font-medium text-gray-900">{item.title}</div>
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4">
-                                                    <div className="text-sm text-gray-500">
-                                                        {s.legalnars?.length || 0}
-                                                    </div>
+                                                    <div className="text-sm text-gray-500">{item.level}</div>
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4">
-                                                    <span
-                                                        className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
-                                                            s.is_published
-                                                                ? 'bg-green-100 text-green-800'
-                                                                : 'bg-yellow-100 text-yellow-800'
-                                                        }`}
-                                                    >
-                                                        {s.is_published ? 'Published' : 'Draft'}
+                                                    <div className="text-sm text-gray-500">{item.legalnars?.length || 0}</div>
+                                                </td>
+                                                <td className="whitespace-nowrap px-6 py-4">
+                                                    <span className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
+                                                        item.is_published
+                                                            ? 'bg-green-100 text-green-800'
+                                                            : 'bg-yellow-100 text-yellow-800'
+                                                    }`}>
+                                                        {item.is_published ? 'Published' : 'Draft'}
                                                     </span>
                                                 </td>
-                                                <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
+                                                <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                                                     <Link
-                                                        href={`/admin/legalnar-series/${s.id}/edit`}
+                                                        href={`/admin/legalnar-series/${item.id}/edit`}
                                                         className="text-indigo-600 hover:text-indigo-900"
                                                     >
                                                         Edit

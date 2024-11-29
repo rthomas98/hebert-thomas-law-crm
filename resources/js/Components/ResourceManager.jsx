@@ -1,83 +1,162 @@
-import React from 'react';
-import InputLabel from '@/Components/InputLabel';
-import InputError from '@/Components/InputError';
-import { DragDropContext, Droppable, Draggable } from '@dnd-kit/core';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { useState } from "react";
+import TextInput from "@/Components/TextInput";
+import InputLabel from "@/Components/InputLabel";
+import InputError from "@/Components/InputError";
+import {
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+} from "@dnd-kit/core";
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    useSortable,
+    verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
-export default function ResourceManager({ resources, onChange, error }) {
-    const handleAdd = () => {
-        onChange([...resources, { title: '', url: '', type: 'link' }]);
+function SortableResource({ id, title, url, onRemove }) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+    } = useSortable({ id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
     };
 
-    const handleRemove = (index) => {
-        onChange(resources.filter((_, i) => i !== index));
+    return (
+        <div
+            ref={setNodeRef}
+            style={style}
+            className="flex items-center space-x-2 p-2 bg-white border rounded-md shadow-sm"
+        >
+            <div
+                {...attributes}
+                {...listeners}
+                className="cursor-move flex-1 flex items-center space-x-2"
+            >
+                <span className="text-sm font-medium">{title}</span>
+                <span className="text-sm text-gray-500">({url})</span>
+            </div>
+            <button
+                type="button"
+                onClick={() => onRemove(id)}
+                className="p-1 text-red-600 hover:text-red-800"
+            >
+                <XMarkIcon className="h-4 w-4" />
+            </button>
+        </div>
+    );
+}
+
+export default function ResourceManager({ resources = [], onChange, error }) {
+    const [title, setTitle] = useState("");
+    const [url, setUrl] = useState("");
+
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
+
+    const handleDragEnd = (event) => {
+        const { active, over } = event;
+
+        if (active.id !== over.id) {
+            const oldIndex = resources.findIndex((item) => item.id === active.id);
+            const newIndex = resources.findIndex((item) => item.id === over.id);
+
+            onChange(arrayMove(resources, oldIndex, newIndex));
+        }
     };
 
-    const handleChange = (index, field, value) => {
-        const newResources = [...resources];
-        newResources[index] = { ...newResources[index], [field]: value };
-        onChange(newResources);
+    const addResource = () => {
+        if (title && url) {
+            onChange([
+                ...resources,
+                {
+                    id: Date.now().toString(),
+                    title,
+                    url,
+                },
+            ]);
+            setTitle("");
+            setUrl("");
+        }
+    };
+
+    const removeResource = (id) => {
+        onChange(resources.filter((resource) => resource.id !== id));
     };
 
     return (
         <div className="space-y-4">
-            <InputLabel value="Resources" />
-            
-            <div className="space-y-4">
-                {resources.map((resource, index) => (
-                    <div key={index} className="flex gap-4 items-start bg-gray-50 p-4 rounded-lg">
-                        <div className="flex-1 space-y-4">
-                            <div>
-                                <input
-                                    type="text"
-                                    value={resource.title}
-                                    onChange={(e) => handleChange(index, 'title', e.target.value)}
-                                    className="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                                    placeholder="Resource Title"
-                                />
-                            </div>
-                            <div>
-                                <input
-                                    type="text"
-                                    value={resource.url}
-                                    onChange={(e) => handleChange(index, 'url', e.target.value)}
-                                    className="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                                    placeholder="Resource URL"
-                                />
-                            </div>
-                            <div>
-                                <select
-                                    value={resource.type}
-                                    onChange={(e) => handleChange(index, 'type', e.target.value)}
-                                    className="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                                >
-                                    <option value="link">Link</option>
-                                    <option value="pdf">PDF</option>
-                                    <option value="video">Video</option>
-                                    <option value="document">Document</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button
-                            type="button"
-                            onClick={() => handleRemove(index)}
-                            className="p-2 text-gray-500 hover:text-red-500"
-                        >
-                            <XMarkIcon className="w-5 h-5" />
-                        </button>
-                    </div>
-                ))}
+            <div className="grid grid-cols-2 gap-4">
+                <div>
+                    <InputLabel htmlFor="resource-title" value="Title" />
+                    <TextInput
+                        id="resource-title"
+                        type="text"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        className="mt-1 block w-full"
+                    />
+                </div>
+                <div>
+                    <InputLabel htmlFor="resource-url" value="URL" />
+                    <TextInput
+                        id="resource-url"
+                        type="text"
+                        value={url}
+                        onChange={(e) => setUrl(e.target.value)}
+                        className="mt-1 block w-full"
+                    />
+                </div>
             </div>
-
             <button
                 type="button"
-                onClick={handleAdd}
-                className="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                onClick={addResource}
+                disabled={!title || !url}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
             >
                 Add Resource
             </button>
-            
-            <InputError message={error} className="mt-2" />
+
+            {error && <InputError message={error} className="mt-2" />}
+
+            <div className="mt-4 space-y-2">
+                <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                >
+                    <SortableContext
+                        items={resources.map((r) => r.id)}
+                        strategy={verticalListSortingStrategy}
+                    >
+                        {resources.map((resource) => (
+                            <SortableResource
+                                key={resource.id}
+                                id={resource.id}
+                                title={resource.title}
+                                url={resource.url}
+                                onRemove={removeResource}
+                            />
+                        ))}
+                    </SortableContext>
+                </DndContext>
+            </div>
         </div>
     );
 }

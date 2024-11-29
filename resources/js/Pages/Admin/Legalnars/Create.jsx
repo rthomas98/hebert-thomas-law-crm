@@ -10,13 +10,16 @@ import DateTimePicker from '@/Components/DateTimePicker';
 import DurationPicker from '@/Components/DurationPicker';
 import ResourceManager from '@/Components/ResourceManager';
 import { formatCurrency } from '@/utils/format';
+import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
-export default function Create({ auth, series }) {
+export default function Create({ auth, categories, levels, series = [] }) {
     const [previewImages, setPreviewImages] = useState([]);
     const [featuredPreview, setFeaturedPreview] = useState(null);
     const editorRef = useRef(null);
 
     const { data, setData, post, processing, errors, reset } = useForm({
+        series_id: '',
+        session_number: '',
         title: '',
         description: '',
         learning_outcomes: [],
@@ -149,6 +152,45 @@ export default function Create({ auth, series }) {
                                                     onChange={e => setData('session_number', e.target.value)}
                                                 />
                                                 <InputError message={errors.session_number} className="mt-2" />
+                                            </div>
+                                        </div>
+
+                                        {/* Category and Level */}
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <InputLabel htmlFor="category" value="Category" />
+                                                <select
+                                                    id="category"
+                                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                    value={data.category}
+                                                    onChange={(e) => setData('category', e.target.value)}
+                                                >
+                                                    <option value="">Select Category</option>
+                                                    {Object.entries(categories).map(([value, label]) => (
+                                                        <option key={value} value={value}>
+                                                            {label}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                <InputError message={errors.category} className="mt-2" />
+                                            </div>
+
+                                            <div>
+                                                <InputLabel htmlFor="level" value="Level" />
+                                                <select
+                                                    id="level"
+                                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                                    value={data.level}
+                                                    onChange={(e) => setData('level', e.target.value)}
+                                                >
+                                                    <option value="">Select Level</option>
+                                                    {Object.entries(levels).map(([value, label]) => (
+                                                        <option key={value} value={value}>
+                                                            {label}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                <InputError message={errors.level} className="mt-2" />
                                             </div>
                                         </div>
 
