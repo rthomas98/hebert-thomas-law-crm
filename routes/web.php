@@ -90,7 +90,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Admin Routes
-Route::prefix('admin')->middleware(['auth', 'can:admin'])->group(function () {
+Route::prefix('admin')->middleware(['auth', 'verified'])->name('admin.')->group(function () {
     require __DIR__.'/admin.php';
 });
 

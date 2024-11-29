@@ -55,10 +55,7 @@ export default function Form({ legalnar = null, series = [] }) {
     const submit = (e) => {
         e.preventDefault();
         if (legalnar) {
-            post(route('admin.legalnars.update', legalnar.id), {
-                preserveScroll: true,
-                preserveState: true,
-            });
+            put(route('admin.legalnars.update', legalnar.id));
         } else {
             post(route('admin.legalnars.store'));
         }
@@ -126,6 +123,19 @@ export default function Form({ legalnar = null, series = [] }) {
                     required
                 />
                 <InputError message={errors.description} className="mt-2" />
+            </div>
+
+            <div>
+                <InputLabel htmlFor="scheduled_at" value="Scheduled At" />
+                <TextInput
+                    id="scheduled_at"
+                    type="datetime-local"
+                    name="scheduled_at"
+                    value={data.scheduled_at}
+                    className="mt-1 block w-full"
+                    onChange={(e) => setData('scheduled_at', e.target.value)}
+                />
+                <InputError message={errors.scheduled_at} className="mt-2" />
             </div>
 
             {/* Media Section */}
@@ -210,8 +220,171 @@ export default function Form({ legalnar = null, series = [] }) {
                 </div>
             </div>
 
-            {/* Existing fields */}
-            {{ ... }}
+            <div>
+                <InputLabel htmlFor="what_you_will_learn" value="What You Will Learn" />
+                <textarea
+                    id="what_you_will_learn"
+                    name="what_you_will_learn"
+                    value={data.what_you_will_learn}
+                    className="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                    rows="4"
+                    onChange={(e) => setData('what_you_will_learn', e.target.value)}
+                />
+                <InputError message={errors.what_you_will_learn} className="mt-2" />
+            </div>
+
+            <div>
+                <InputLabel htmlFor="level" value="Level" />
+                <TextInput
+                    id="level"
+                    type="text"
+                    name="level"
+                    value={data.level}
+                    className="mt-1 block w-full"
+                    onChange={(e) => setData('level', e.target.value)}
+                />
+                <InputError message={errors.level} className="mt-2" />
+            </div>
+
+            <div>
+                <InputLabel htmlFor="category" value="Category" />
+                <TextInput
+                    id="category"
+                    type="text"
+                    name="category"
+                    value={data.category}
+                    className="mt-1 block w-full"
+                    onChange={(e) => setData('category', e.target.value)}
+                />
+                <InputError message={errors.category} className="mt-2" />
+            </div>
+
+            <div>
+                <InputLabel htmlFor="topics" value="Topics" />
+                <textarea
+                    id="topics"
+                    name="topics"
+                    value={data.topics}
+                    className="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                    rows="4"
+                    onChange={(e) => setData('topics', e.target.value)}
+                />
+                <InputError message={errors.topics} className="mt-2" />
+            </div>
+
+            <div>
+                <InputLabel htmlFor="meeting_url" value="Meeting URL" />
+                <TextInput
+                    id="meeting_url"
+                    type="url"
+                    name="meeting_url"
+                    value={data.meeting_url}
+                    className="mt-1 block w-full"
+                    onChange={(e) => setData('meeting_url', e.target.value)}
+                />
+                <InputError message={errors.meeting_url} className="mt-2" />
+            </div>
+
+            <div>
+                <InputLabel htmlFor="duration_minutes" value="Duration Minutes" />
+                <TextInput
+                    id="duration_minutes"
+                    type="number"
+                    name="duration_minutes"
+                    value={data.duration_minutes}
+                    className="mt-1 block w-full"
+                    onChange={(e) => setData('duration_minutes', e.target.value)}
+                />
+                <InputError message={errors.duration_minutes} className="mt-2" />
+            </div>
+
+            <div>
+                <InputLabel htmlFor="price" value="Price" />
+                <TextInput
+                    id="price"
+                    type="number"
+                    name="price"
+                    value={data.price}
+                    className="mt-1 block w-full"
+                    onChange={(e) => setData('price', e.target.value)}
+                />
+                <InputError message={errors.price} className="mt-2" />
+            </div>
+
+            <div>
+                <InputLabel htmlFor="is_featured" value="Is Featured" />
+                <input
+                    id="is_featured"
+                    type="checkbox"
+                    name="is_featured"
+                    checked={data.is_featured}
+                    onChange={(e) => setData('is_featured', e.target.checked)}
+                />
+                <InputError message={errors.is_featured} className="mt-2" />
+            </div>
+
+            <div>
+                <InputLabel htmlFor="is_published" value="Is Published" />
+                <input
+                    id="is_published"
+                    type="checkbox"
+                    name="is_published"
+                    checked={data.is_published}
+                    onChange={(e) => setData('is_published', e.target.checked)}
+                />
+                <InputError message={errors.is_published} className="mt-2" />
+            </div>
+
+            <div>
+                <InputLabel htmlFor="is_live" value="Is Live" />
+                <input
+                    id="is_live"
+                    type="checkbox"
+                    name="is_live"
+                    checked={data.is_live}
+                    onChange={(e) => setData('is_live', e.target.checked)}
+                />
+                <InputError message={errors.is_live} className="mt-2" />
+            </div>
+
+            <div>
+                <InputLabel htmlFor="published_at" value="Published At" />
+                <TextInput
+                    id="published_at"
+                    type="datetime-local"
+                    name="published_at"
+                    value={data.published_at}
+                    className="mt-1 block w-full"
+                    onChange={(e) => setData('published_at', e.target.value)}
+                />
+                <InputError message={errors.published_at} className="mt-2" />
+            </div>
+
+            <div>
+                <InputLabel htmlFor="resources" value="Resources" />
+                <textarea
+                    id="resources"
+                    name="resources"
+                    value={data.resources}
+                    className="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                    rows="4"
+                    onChange={(e) => setData('resources', e.target.value)}
+                />
+                <InputError message={errors.resources} className="mt-2" />
+            </div>
+
+            <div>
+                <InputLabel htmlFor="instructor_id" value="Instructor ID" />
+                <TextInput
+                    id="instructor_id"
+                    type="number"
+                    name="instructor_id"
+                    value={data.instructor_id}
+                    className="mt-1 block w-full"
+                    onChange={(e) => setData('instructor_id', e.target.value)}
+                />
+                <InputError message={errors.instructor_id} className="mt-2" />
+            </div>
 
             <div className="flex items-center gap-4">
                 <PrimaryButton disabled={processing}>

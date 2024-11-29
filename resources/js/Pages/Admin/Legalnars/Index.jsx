@@ -1,8 +1,22 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { format } from 'date-fns';
 
 export default function Index({ auth, legalnars }) {
+    const formatDate = (isoString) => {
+        if (!isoString) return 'Not scheduled';
+        try {
+            const date = new Date(isoString);
+            if (isNaN(date.getTime())) return 'Invalid date';
+            return format(date, 'MMM d, yyyy h:mm a');
+        } catch (error) {
+            console.error('Error formatting date:', error, isoString);
+            return 'Error formatting date';
+        }
+    };
+
+    console.log('Legalnars data:', legalnars.data);
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -12,7 +26,7 @@ export default function Index({ auth, legalnars }) {
                         Legalnars
                     </h2>
                     <Link
-                        href="/admin/legalnars/create"
+                        href={route('admin.legalnars.create')}
                         className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >
                         Create Legalnar
@@ -37,10 +51,7 @@ export default function Index({ auth, legalnars }) {
                                                 Series
                                             </th>
                                             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                Scheduled Time
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                Status
+                                                Scheduled For
                                             </th>
                                             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                                 Actions
@@ -49,64 +60,50 @@ export default function Index({ auth, legalnars }) {
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 bg-white">
                                         {legalnars.data.map((legalnar) => (
-                                            <tr key={legalnar.id}>
+                                            <tr 
+                                                key={legalnar.id}
+                                                className="hover:bg-gray-50 cursor-pointer"
+                                                onClick={() => router.visit(route('admin.legalnars.edit', legalnar.id))}
+                                            >
                                                 <td className="whitespace-nowrap px-6 py-4">
-                                                    <div className="text-sm font-medium text-gray-900">
+                                                    <div className="text-sm text-gray-900">
                                                         {legalnar.title}
                                                     </div>
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4">
-                                                    <div className="text-sm text-gray-500">
-                                                        {legalnar.series?.title || 'N/A'}
+                                                    <div className="text-sm text-gray-900">
+                                                        {legalnar.series?.title || 'No Series'}
                                                     </div>
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4">
-                                                    <div className="text-sm text-gray-500">
-                                                        {format(
-                                                            new Date(legalnar.scheduled_time),
-                                                            'MMM d, yyyy h:mm a',
-                                                        )}
+                                                    <div className="text-sm text-gray-900">
+                                                        {formatDate(legalnar.scheduled_at)}
                                                     </div>
-                                                </td>
-                                                <td className="whitespace-nowrap px-6 py-4">
-                                                    <span
-                                                        className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${
-                                                            legalnar.is_published
-                                                                ? 'bg-green-100 text-green-800'
-                                                                : 'bg-yellow-100 text-yellow-800'
-                                                        }`}
-                                                    >
-                                                        {legalnar.is_published ? 'Published' : 'Draft'}
-                                                    </span>
                                                 </td>
                                                 <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
-                                                    <Link
-                                                        href={`/admin/legalnars/${legalnar.id}/edit`}
-                                                        className="text-indigo-600 hover:text-indigo-900"
-                                                    >
-                                                        Edit
-                                                    </Link>
+                                                    <div className="flex space-x-3" onClick={(e) => e.stopPropagation()}>
+                                                        <Link
+                                                            href={route('admin.legalnars.edit', legalnar.id)}
+                                                            className="text-indigo-600 hover:text-indigo-900"
+                                                        >
+                                                            Edit
+                                                        </Link>
+                                                        <button
+                                                            onClick={() => {
+                                                                if (confirm('Are you sure you want to delete this legalnar?')) {
+                                                                    router.delete(route('admin.legalnars.destroy', legalnar.id));
+                                                                }
+                                                            }}
+                                                            className="text-red-600 hover:text-red-900"
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
-                            </div>
-
-                            {/* Pagination */}
-                            <div className="mt-4">
-                                {legalnars.links.map((link, index) => (
-                                    <Link
-                                        key={index}
-                                        href={link.url}
-                                        className={`mx-1 rounded px-3 py-1 ${
-                                            link.active
-                                                ? 'bg-indigo-600 text-white'
-                                                : 'text-gray-600 hover:bg-gray-100'
-                                        }`}
-                                        dangerouslySetInnerHTML={{ __html: link.label }}
-                                    />
-                                ))}
                             </div>
                         </div>
                     </div>

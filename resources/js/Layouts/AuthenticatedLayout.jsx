@@ -25,21 +25,10 @@ export default function AuthenticatedLayout({ header, children }) {
                             </div>
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
-                                    Dashboard
-                                </NavLink>
+                                
 
                                 {isAdmin && (
                                     <>
-                                        <NavLink
-                                            href={route('admin.dashboard')}
-                                            active={route().current('admin.dashboard')}
-                                        >
-                                            Admin Dashboard
-                                        </NavLink>
                                         <NavLink
                                             href={route('admin.legalnars.index')}
                                             active={route().current('admin.legalnars.*')}
@@ -51,6 +40,24 @@ export default function AuthenticatedLayout({ header, children }) {
                                             active={route().current('admin.legalnar-series.*')}
                                         >
                                             Legalnar Series
+                                        </NavLink>
+                                        <NavLink
+                                            href={route('admin.case-results.index')}
+                                            active={route().current('admin.case-results.*')}
+                                        >
+                                            Case Results
+                                        </NavLink>
+                                        <NavLink
+                                            href={route('admin.client-resources.index')}
+                                            active={route().current('admin.client-resources.*')}
+                                        >
+                                            Client Resources
+                                        </NavLink>
+                                        <NavLink
+                                            href={route('admin.insights.index')}
+                                            active={route().current('admin.insights.*')}
+                                        >
+                                            Insights
                                         </NavLink>
                                     </>
                                 )}
@@ -86,7 +93,7 @@ export default function AuthenticatedLayout({ header, children }) {
 
                                     <Dropdown.Content>
                                         {isAdmin && (
-                                            <Dropdown.Link href="/admin/legalnars">
+                                            <Dropdown.Link href={route('admin.legalnars.index')}>
                                                 Admin Dashboard
                                             </Dropdown.Link>
                                         )}
@@ -154,14 +161,7 @@ export default function AuthenticatedLayout({ header, children }) {
                         ' sm:hidden'
                     }
                 >
-                    <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
-
+                    <div className="pt-2 pb-3 space-y-1">
                         {isAdmin && (
                             <>
                                 <ResponsiveNavLink
@@ -192,7 +192,7 @@ export default function AuthenticatedLayout({ header, children }) {
 
                         <div className="mt-3 space-y-1">
                             {isAdmin && (
-                                <ResponsiveNavLink href="/admin/legalnars">
+                                <ResponsiveNavLink href={route('admin.legalnars.index')}>
                                     Admin Dashboard
                                 </ResponsiveNavLink>
                             )}

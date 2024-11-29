@@ -78,28 +78,32 @@ class LegalnarSeriesController extends AdminController
         if ($request->hasFile('image')) {
             // Delete old image if it exists
             if ($series->image) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $series->image));
+                $oldPath = str_replace('/storage/', '', $series->image);
+                Storage::disk('public')->delete($oldPath);
             }
+            
+            // Store new image
             $path = $request->file('image')->store('series', 'public');
             $validated['image'] = Storage::url($path);
         }
 
         $validated['slug'] = Str::slug($validated['title']);
-        
         $series->update($validated);
 
-        return $this->success('Legalnar series updated successfully', $series);
+        return redirect()->route('admin.legalnar-series.index')
+            ->with('success', 'Series updated successfully.');
     }
 
     public function destroy(LegalnarSeries $series)
     {
-        // Delete the series image if it exists
         if ($series->image) {
-            Storage::disk('public')->delete(str_replace('/storage/', '', $series->image));
+            $path = str_replace('/storage/', '', $series->image);
+            Storage::disk('public')->delete($path);
         }
-
+        
         $series->delete();
 
-        return $this->success('Legalnar series deleted successfully');
+        return redirect()->route('admin.legalnar-series.index')
+            ->with('success', 'Series deleted successfully.');
     }
 }

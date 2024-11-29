@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class LegalnarController extends Controller
 {
@@ -17,10 +18,29 @@ class LegalnarController extends Controller
     {
         $legalnars = Legalnar::with(['series', 'instructor'])
             ->latest()
-            ->paginate(10);
+            ->paginate(10)
+            ->through(function ($legalnar) {
+                return [
+                    'id' => $legalnar->id,
+                    'title' => $legalnar->title,
+                    'series' => $legalnar->series ? [
+                        'id' => $legalnar->series->id,
+                        'title' => $legalnar->series->title,
+                    ] : null,
+                    'scheduled_at' => $legalnar->scheduled_at ? $legalnar->scheduled_at->toISOString() : null,
+                    'is_published' => $legalnar->is_published,
+                ];
+            });
 
         return Inertia::render('Admin/Legalnars/Index', [
             'legalnars' => $legalnars
+        ]);
+    }
+
+    public function show(Legalnar $legalnar)
+    {
+        return Inertia::render('Admin/Legalnars/Show', [
+            'legalnar' => $legalnar->load(['series', 'instructor'])
         ]);
     }
 
@@ -82,13 +102,6 @@ class LegalnarController extends Controller
 
         return redirect()->route('admin.legalnars.index')
             ->with('message', 'Legalnar created successfully.');
-    }
-
-    public function show(Legalnar $legalnar)
-    {
-        return Inertia::render('Admin/Legalnars/Show', [
-            'legalnar' => $legalnar->load(['series', 'instructor'])
-        ]);
     }
 
     public function edit(Legalnar $legalnar)

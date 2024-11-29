@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\CaseResult;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -17,6 +17,13 @@ class CaseResultController extends Controller
         ]);
     }
 
+    public function show(CaseResult $caseResult)
+    {
+        return Inertia::render('Admin/CaseResults/Show', [
+            'caseResult' => $caseResult
+        ]);
+    }
+
     public function create()
     {
         return Inertia::render('Admin/CaseResults/Create');
@@ -26,12 +33,12 @@ class CaseResultController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'case_type' => 'required|string|max:255',
             'description' => 'required|string',
-            'client_type' => 'required|string',
-            'practice_area' => 'required|string',
-            'outcome' => 'required|string',
             'amount' => 'nullable|numeric',
-            'is_featured' => 'boolean',
+            'outcome' => 'required|string',
+            'date_resolved' => 'nullable|date',
+            'client_testimonial' => 'nullable|string',
             'is_published' => 'boolean',
         ]);
 
@@ -52,12 +59,12 @@ class CaseResultController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'case_type' => 'required|string|max:255',
             'description' => 'required|string',
-            'client_type' => 'required|string',
-            'practice_area' => 'required|string',
-            'outcome' => 'required|string',
             'amount' => 'nullable|numeric',
-            'is_featured' => 'boolean',
+            'outcome' => 'required|string',
+            'date_resolved' => 'nullable|date',
+            'client_testimonial' => 'nullable|string',
             'is_published' => 'boolean',
         ]);
 

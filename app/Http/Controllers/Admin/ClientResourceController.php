@@ -69,6 +69,13 @@ class ClientResourceController extends Controller
             ->with('success', 'Client resource updated successfully.');
     }
 
+    public function show(ClientResource $clientResource)
+    {
+        return Inertia::render('Admin/ClientResources/Show', [
+            'resource' => $clientResource
+        ]);
+    }
+
     public function destroy(ClientResource $clientResource)
     {
         $clientResource->delete();

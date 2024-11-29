@@ -2,7 +2,7 @@ import { Head, Link } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { format } from 'date-fns';
 
-export default function Index({ auth, clientResources }) {
+export default function Index({ auth, resources }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -35,7 +35,13 @@ export default function Index({ auth, clientResources }) {
                                                 Type
                                             </th>
                                             <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Last Updated
+                                                Category
+                                            </th>
+                                            <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Access Level
+                                            </th>
+                                            <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Status
                                             </th>
                                             <th className="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                 Actions
@@ -43,21 +49,38 @@ export default function Index({ auth, clientResources }) {
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
-                                        {clientResources.data.map((resource) => (
-                                            <tr key={resource.id}>
+                                        {resources.data.map((resource) => (
+                                            <tr 
+                                                key={resource.id}
+                                                className="hover:bg-gray-50 cursor-pointer"
+                                                onClick={() => window.location.href = route('admin.client-resources.show', resource.id)}
+                                            >
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                                     {resource.title}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                     {resource.type}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                    {format(new Date(resource.updated_at), 'MMM d, yyyy')}
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {resource.category}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {resource.access_level}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                                        resource.is_published 
+                                                            ? 'bg-green-100 text-green-800' 
+                                                            : 'bg-yellow-100 text-yellow-800'
+                                                    }`}>
+                                                        {resource.is_published ? 'Published' : 'Draft'}
+                                                    </span>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                     <Link
                                                         href={route('admin.client-resources.edit', resource.id)}
                                                         className="text-blue-600 hover:text-blue-900 mr-4"
+                                                        onClick={(e) => e.stopPropagation()}
                                                     >
                                                         Edit
                                                     </Link>
@@ -66,6 +89,7 @@ export default function Index({ auth, clientResources }) {
                                                         method="delete"
                                                         as="button"
                                                         className="text-red-600 hover:text-red-900"
+                                                        onClick={(e) => e.stopPropagation()}
                                                     >
                                                         Delete
                                                     </Link>

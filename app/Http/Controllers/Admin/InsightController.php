@@ -69,6 +69,13 @@ class InsightController extends Controller
             ->with('success', 'Insight updated successfully.');
     }
 
+    public function show(Insight $insight)
+    {
+        return Inertia::render('Admin/Insights/Show', [
+            'insight' => $insight->load('author')
+        ]);
+    }
+
     public function destroy(Insight $insight)
     {
         $insight->delete();

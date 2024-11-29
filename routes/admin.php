@@ -11,59 +11,59 @@ use Inertia\Inertia;
 // Admin dashboard
 Route::get('/', function () {
     return Inertia::render('Admin/Dashboard');
-})->name('admin.dashboard');
+})->name('dashboard');
 
 // Legalnar routes
 Route::resource('legalnars', LegalnarController::class)->names([
-    'index' => 'admin.legalnars.index',
-    'create' => 'admin.legalnars.create',
-    'store' => 'admin.legalnars.store',
-    'show' => 'admin.legalnars.show',
-    'edit' => 'admin.legalnars.edit',
-    'update' => 'admin.legalnars.update',
-    'destroy' => 'admin.legalnars.destroy',
+    'index' => 'legalnars.index',
+    'create' => 'legalnars.create',
+    'store' => 'legalnars.store',
+    'show' => 'legalnars.show',
+    'edit' => 'legalnars.edit',
+    'update' => 'legalnars.update',
+    'destroy' => 'legalnars.destroy',
 ]);
 
 // Legalnar series routes
 Route::resource('legalnar-series', LegalnarSeriesController::class)->names([
-    'index' => 'admin.legalnar-series.index',
-    'create' => 'admin.legalnar-series.create',
-    'store' => 'admin.legalnar-series.store',
-    'show' => 'admin.legalnar-series.show',
-    'edit' => 'admin.legalnar-series.edit',
-    'update' => 'admin.legalnar-series.update',
-    'destroy' => 'admin.legalnar-series.destroy',
+    'index' => 'legalnar-series.index',
+    'create' => 'legalnar-series.create',
+    'store' => 'legalnar-series.store',
+    'show' => 'legalnar-series.show',
+    'edit' => 'legalnar-series.edit',
+    'update' => 'legalnar-series.update',
+    'destroy' => 'legalnar-series.destroy',
 ]);
 
 // Case Results routes
 Route::resource('case-results', CaseResultController::class)->names([
-    'index' => 'admin.case-results.index',
-    'create' => 'admin.case-results.create',
-    'store' => 'admin.case-results.store',
-    'show' => 'admin.case-results.show',
-    'edit' => 'admin.case-results.edit',
-    'update' => 'admin.case-results.update',
-    'destroy' => 'admin.case-results.destroy',
+    'index' => 'case-results.index',
+    'create' => 'case-results.create',
+    'store' => 'case-results.store',
+    'show' => 'case-results.show',
+    'edit' => 'case-results.edit',
+    'update' => 'case-results.update',
+    'destroy' => 'case-results.destroy',
 ]);
 
 // Insights routes
 Route::resource('insights', InsightController::class)->names([
-    'index' => 'admin.insights.index',
-    'create' => 'admin.insights.create',
-    'store' => 'admin.insights.store',
-    'show' => 'admin.insights.show',
-    'edit' => 'admin.insights.edit',
-    'update' => 'admin.insights.update',
-    'destroy' => 'admin.insights.destroy',
+    'index' => 'insights.index',
+    'create' => 'insights.create',
+    'store' => 'insights.store',
+    'show' => 'insights.show',
+    'edit' => 'insights.edit',
+    'update' => 'insights.update',
+    'destroy' => 'insights.destroy',
 ]);
 
 // Client Resources routes
 Route::resource('client-resources', ClientResourceController::class)->names([
-    'index' => 'admin.client-resources.index',
-    'create' => 'admin.client-resources.create',
-    'store' => 'admin.client-resources.store',
-    'show' => 'admin.client-resources.show',
-    'edit' => 'admin.client-resources.edit',
-    'update' => 'admin.client-resources.update',
-    'destroy' => 'admin.client-resources.destroy',
+    'index' => 'client-resources.index',
+    'create' => 'client-resources.create',
+    'store' => 'client-resources.store',
+    'show' => 'client-resources.show',
+    'edit' => 'client-resources.edit',
+    'update' => 'client-resources.update',
+    'destroy' => 'client-resources.destroy',
 ]);
