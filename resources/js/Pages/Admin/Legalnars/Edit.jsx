@@ -11,12 +11,14 @@ import SEOTools from '@/Components/Admin/SEOTools';
 import RichTextEditor from '@/Components/Admin/RichTextEditor';
 import ContentPreview from '@/Components/Admin/ContentPreview';
 import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import useFlashMessages from '@/Hooks/useFlashMessages';
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
 }
 
 export default function Edit({ auth, legalnar, categories, levels }) {
+    useFlashMessages();
     const [selectedTab, setSelectedTab] = useState(0);
     const [showMediaLibrary, setShowMediaLibrary] = useState(false);
     const [mediaType, setMediaType] = useState(null); // 'featured' or 'additional'

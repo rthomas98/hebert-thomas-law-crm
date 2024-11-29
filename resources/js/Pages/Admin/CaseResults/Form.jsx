@@ -51,10 +51,17 @@ export default function Form({ caseResult = null, action }) {
 
     const submit = (e) => {
         e.preventDefault();
-        if (caseResult) {
-            put(route('admin.case-results.update', caseResult.id));
+        
+        // Format amount to store as cents
+        const formattedData = {
+            ...data,
+            amount: data.amount.toString(), // Ensure it's a string
+        };
+
+        if (action === 'edit') {
+            put(route('admin.case-results.update', caseResult.id), formattedData);
         } else {
-            post(route('admin.case-results.store'));
+            post(route('admin.case-results.store'), formattedData);
         }
     };
 

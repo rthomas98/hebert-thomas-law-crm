@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import { router } from '@inertiajs/react';
 
-const TINYMCE_API_KEY = '71njpraqknqbbkeet83sybnwnco7cr3fib8ptq7hdckanuct';
+const TINYMCE_API_KEY = import.meta.env.VITE_TINYMCE_API_KEY;
 
 // Custom templates for common content patterns
 const templates = [
@@ -126,13 +126,12 @@ export default function RichTextEditor({
 }) {
     const editorRef = useRef(null);
 
-    // Default plugins with advanced features
+    // Default plugins with essential features
     const defaultPlugins = [
         'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
         'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
         'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount',
-        'paste', 'pagebreak', 'quickbars', 'nonbreaking', 'emoticons',
-        'hr', 'textpattern', 'toc', 'imagetools', 'template', 'codesample'
+        'quickbars', 'emoticons'
     ];
 
     // File picker callback for handling non-image files

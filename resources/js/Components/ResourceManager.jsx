@@ -2,6 +2,7 @@ import { useState } from "react";
 import TextInput from "@/Components/TextInput";
 import InputLabel from "@/Components/InputLabel";
 import InputError from "@/Components/InputError";
+import toast from "react-hot-toast";
 import {
     DndContext,
     closestCenter,
@@ -78,6 +79,7 @@ export default function ResourceManager({ resources = [], onChange, error }) {
             const newIndex = resources.findIndex((item) => item.id === over.id);
 
             onChange(arrayMove(resources, oldIndex, newIndex));
+            toast.success('Resource order updated');
         }
     };
 
@@ -93,11 +95,13 @@ export default function ResourceManager({ resources = [], onChange, error }) {
             ]);
             setTitle("");
             setUrl("");
+            toast.success('Resource added successfully');
         }
     };
 
     const removeResource = (id) => {
         onChange(resources.filter((resource) => resource.id !== id));
+        toast.success('Resource removed successfully');
     };
 
     return (

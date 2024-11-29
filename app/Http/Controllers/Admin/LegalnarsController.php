@@ -63,8 +63,9 @@ class LegalnarsController extends Controller
 
         $legalnar = Legalnar::create($validated);
 
-        return redirect()->route('admin.legalnars.edit', $legalnar)
-            ->with('success', 'Legalnar created successfully.');
+        return redirect()
+            ->route('admin.legalnars.index')
+            ->with('success', 'Legal narration created successfully');
     }
 
     public function edit(Legalnar $legalnar)
@@ -106,8 +107,9 @@ class LegalnarsController extends Controller
 
         $legalnar->update($validated);
 
-        return redirect()->back()
-            ->with('success', 'Legalnar updated successfully.');
+        return redirect()
+            ->route('admin.legalnars.index')
+            ->with('success', 'Legal narration updated successfully');
     }
 
     public function show(Legalnar $legalnar)
@@ -121,7 +123,8 @@ class LegalnarsController extends Controller
     {
         $legalnar->delete();
 
-        return redirect()->route('admin.legalnars.index')
-            ->with('success', 'Legalnar deleted successfully.');
+        return redirect()
+            ->route('admin.legalnars.index')
+            ->with('success', 'Legal narration deleted successfully');
     }
 }

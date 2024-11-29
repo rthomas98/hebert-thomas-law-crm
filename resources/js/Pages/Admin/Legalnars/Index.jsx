@@ -6,6 +6,7 @@ import DateRangeFilter from '@/Components/Admin/DateRangeFilter';
 import StatusFilter from '@/Components/Admin/StatusFilter';
 import BulkActions from '@/Components/Admin/BulkActions';
 import { PencilIcon, TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
+import useFlashMessages from '@/Hooks/useFlashMessages';
 
 const LEGALNAR_CATEGORIES = [
     'Business Law',
@@ -18,6 +19,7 @@ const LEGALNAR_CATEGORIES = [
 ];
 
 export default function Index({ auth, legalnars }) {
+    useFlashMessages();
     const [selectedItems, setSelectedItems] = useState([]);
     const [filters, setFilters] = useState({
         search: '',

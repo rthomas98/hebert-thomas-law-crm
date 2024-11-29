@@ -11,8 +11,10 @@ import DurationPicker from '@/Components/DurationPicker';
 import ResourceManager from '@/Components/ResourceManager';
 import { formatCurrency } from '@/utils/format';
 import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import useFlashMessages from '@/Hooks/useFlashMessages';
 
 export default function Create({ auth, categories, levels, series = [] }) {
+    useFlashMessages();
     const [previewImages, setPreviewImages] = useState([]);
     const [featuredPreview, setFeaturedPreview] = useState(null);
     const editorRef = useRef(null);

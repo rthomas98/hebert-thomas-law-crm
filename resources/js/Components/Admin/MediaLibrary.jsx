@@ -1,6 +1,7 @@
 import { useState, useEffect, Fragment } from 'react';
 import { router } from '@inertiajs/react';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 import { Dialog, Transition } from '@headlessui/react';
 import { 
     PhotoIcon, 
@@ -54,12 +55,12 @@ export default function MediaLibrary({ onSelect, multiple = false }) {
             await loadImages();
             setIsUploading(false);
             setUploadProgress(0);
-            // toast.success('Images uploaded successfully');
+            toast.success('Images uploaded successfully');
         } catch (error) {
             console.error('Error uploading file:', error);
             setIsUploading(false);
             setUploadProgress(0);
-            // toast.error('Failed to upload images');
+            toast.error('Failed to upload images');
         }
     };
 
@@ -82,11 +83,17 @@ export default function MediaLibrary({ onSelect, multiple = false }) {
     };
 
     const handleDelete = async (imageId) => {
+        if (!confirm('Are you sure you want to delete this file?')) {
+            return;
+        }
+
         try {
             await axios.delete(route('admin.media.destroy', imageId));
             await loadImages();
+            toast.success('File deleted successfully');
         } catch (error) {
             console.error('Error deleting image:', error);
+            toast.error('Failed to delete file');
         }
     };
 
@@ -107,7 +114,7 @@ export default function MediaLibrary({ onSelect, multiple = false }) {
             loadImages();
             setIsEditModalOpen(false);
             setEditingImage(null);
-            // toast.success('Image metadata updated successfully');
+            toast.success('Image metadata updated successfully');
         })
         .catch((error) => {
             console.error('Error updating image metadata:', error);
